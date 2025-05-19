@@ -17,7 +17,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/dashboard', function () {
     return view('pages.dashboard');
-})->middleware('role:Admin, User');
+})->middleware('role:Admin,User');
 
 Route::get('/resident', [ResidentController::class, 'index'])->middleware('role:Admin');
 Route::get('/resident/create', [ResidentController::class, 'create']);

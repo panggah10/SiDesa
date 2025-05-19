@@ -20,31 +20,32 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             return back();
-        }
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        } else {
+            $credentials = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            // dd(Auth::user());
-            $userStatus = Auth::user()->status;
-            if ($userStatus  == 'submitted') {
-                return back()->withErrors([
-                    'email' => 'Akun anda masih menunggu persetujuan admin',
-                ]);
-            } else if ($userStatus  == 'rejected') {
-                return back()->withErrors([
-                    'email' => 'Akun anda ditolak',
-                ]);
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                // dd(Auth::user());
+                $userStatus = Auth::user()->status;
+                if ($userStatus  == 'submitted') {
+                    return back()->withErrors([
+                        'email' => 'Akun anda masih menunggu persetujuan admin',
+                    ]);
+                } else if ($userStatus  == 'rejected') {
+                    return back()->withErrors([
+                        'email' => 'Akun anda ditolak',
+                    ]);
+                }
+                return redirect()->intended('dashboard');
             }
-            return redirect()->intended('dashboard');
-        }
 
-        return back()->withErrors([
-            'email' => 'Terjadi kesealahan, periksa kembali email atau password anda.',
-        ])->onlyInput('email');
+            return back()->withErrors([
+                'email' => 'Terjadi kesealahan, periksa kembali email atau password anda.',
+            ])->onlyInput('email');
+        }
     }
 
     public function registerView()
